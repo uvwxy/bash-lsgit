@@ -15,26 +15,31 @@ White='\033[0;37m'        # Whit
 lsGitDir(){
   HERE=$(pwd)
   cd $1
-  GUP=$(git remote update > /dev/null 2>&1)
+  
+  if [ "$2" == "update" ]; then
+    GUP=$(git remote update > /dev/null 2>&1)
+  fi
+
   GST=$(git status)
   BRANCH=$(git rev-parse --abbrev-ref HEAD)
   UNCLEAN=$(git status --porcelain | wc -l | tr -d " ")
   STASH=$(git stash list | wc -l | tr -d " ")
   x=$(echo $GST | grep clean) && echo -ne "$Green" || echo -ne "$Red"
-  echo -e "$d$Color_Off $BRANCH/$UNCLEAN/$STASH"
+  printf "%-32s $Color_Off %-32s %-3s %-3s\n" ${d:0:32} ${BRANCH:0:32} $UNCLEAN $STASH 
   cd $HERE
 }
 
 lsVcsDirs(){
+  printf "%-32s $Color_Off %-26s %-9s %-3s\n" "Repo" "Branch" "Changes" "Stash Count"
   for d in $(ls $1); do
     if [ -d $d ]; then
       if [ -d $d/.git ]; then
-        lsGitDir $d
+        lsGitDir $d $2
       else
-        echo -e "$Yellow$d$Color_Off -N/A-"
+        printf "$Yellow%-32s $Color_Off %-32s %-3s %-3s\n" ${d:0:32} "n/a" "-" "-" 
       fi
     fi
   done;
 }
 
-lsVcsDirs $(pwd)
+lsVcsDirs $(pwd) $1

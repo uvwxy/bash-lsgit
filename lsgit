@@ -12,7 +12,7 @@ Purple='\033[0;35m'       # Purple
 Cyan='\033[0;36m'         # Cyan
 White='\033[0;37m'        # Whit
 
-lsgitDir(){
+lsGitDir(){
   HERE=$(pwd)
   cd $1
   GUP=$(git remote update > /dev/null 2>&1)
@@ -25,11 +25,11 @@ lsgitDir(){
   cd $HERE
 }
 
-lsgitDirs(){
+lsVcsDirs(){
   for d in $(ls $1); do
     if [ -d $d ]; then
       if [ -d $d/.git ]; then
-        lsgitDir $d
+        lsGitDir $d
       else
         echo -e "$Yellow$d$Color_Off -N/A-"
       fi
@@ -37,4 +37,4 @@ lsgitDirs(){
   done;
 }
 
-lsgitDirs $(pwd)
+lsVcsDirs $(pwd)
